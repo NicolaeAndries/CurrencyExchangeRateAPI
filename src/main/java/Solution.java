@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Solution {
@@ -20,7 +21,7 @@ public class Solution {
                 LocalDateTime currentDateTime = LocalDateTime.now();
                 String dateTime = dateTimeFormatter.format(currentDateTime);
 
-                URL url = new URL("https://api.apilayer.com/fixer/convert?to=USD&from=EUR&amount=100&apikey=6A52bwZH3zvlC0g7ususni99TbMmrAPe");
+                URL url = new URL("https://api.apilayer.com/exchangerates_data/convert?to=USD&from=EUR&amount=1&apikey=gRTv353isCftYIbneHV1zIws6BnDyPDh");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.connect();
@@ -35,14 +36,14 @@ public class Solution {
                     JSONParser parse = new JSONParser();
                     JSONObject dataObject = (JSONObject) parse.parse(jsonStringContent.toString());
                     JSONObject object = (JSONObject) dataObject.get("info");
-                    if (lastValue != object.get("rate")) {
+                    if (!Objects.equals(lastValue, object.get("rate"))) {
                         System.out.println("________New Data________");
                         System.out.println("[EUR] -> [USD]: " + object.get("rate") + " at " + dateTime);
                         System.out.println("________________________");
                     }
 
                     lastValue = (Double) object.get("rate");
-                    Thread.sleep(2 * 1000);
+                    Thread.sleep(5 * 1000);
                 }
             }
         } catch (IOException | ParseException | InterruptedException exception) {
